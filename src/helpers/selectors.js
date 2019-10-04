@@ -31,7 +31,7 @@ export function getInterviewersForDay(state, day) {
   const interviewers = dayKey.interviewers;
   interviewers.map(interviewer => {
     if(state.interviewers[interviewer]) {
-      interviewerArray.push(interviewer);
+      interviewerArray.push(state.interviewers[interviewer]);
     }
   })
     
