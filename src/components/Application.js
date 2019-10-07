@@ -4,6 +4,7 @@ import "components/Application.scss";
 import DayList from "components/Daylist";
 import Appointment from "components/Appointments/index";
 import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "helpers/selectors";
+// import useApplicationData from "hooks/useApplicationData";
 
 export default function Application(props) {
   const setDay = day => setState({ ...state, day });
@@ -26,10 +27,10 @@ export default function Application(props) {
     setState({...state, appointments})
     axios.put(`http://localhost:8001/api/appointments/${id}`, {interview})
     .then(() => {setState({...state, appointments})})
+    .then(() => {getSpots(state.day)})
     .catch(err => {return err});
   }
   function cancelInterview(id) {
-    console.log("cancel=>", id)
     const appointment = {
       ...state.appointments[id],
       interview: null
@@ -44,23 +45,57 @@ export default function Application(props) {
     .catch(err => {return err}); 
   }
 
-const appointments = getAppointmentsForDay(state, state.day);
-const interviewers = getInterviewersForDay(state, state.day);
-const schedule = appointments.map((appointment) => {
-const interview = getInterview(state, appointment.interview);
+// const appointments = getAppointmentsForDay(state, state.day);
+// const interviewers = getInterviewersForDay(state, state.day);
+// const schedule = appointments.map((appointment) => {
+// const interview = getInterview(state, appointment.interview);
 
-  return (
-    <Appointment
-      key={appointment.id}
-      id={appointment.id}
-      time={appointment.time}
-      interview={interview}
-      interviewers={interviewers}
-      bookInterview={bookInterview}
-      cancelInterview={cancelInterview}
-    />
-  )
-});
+// const {
+//   state,
+//   dispatchState,
+//   bookInterview,
+//   cancelInterview,
+//   getSpots
+// } = useApplicationData();
+
+
+function getSpots(day) {
+      let spots = [];
+      const appointmentsPerDay = getAppointmentsForDay(state, day);
+  
+      spots = appointmentsPerDay.filter(appointment => appointment.interview === null);
+  
+      return spots.length;
+    };
+const interviewers = getInterviewersForDay(state, state.day);
+
+const schedule = getAppointmentsForDay(state, state.day).map(
+  appointment => {
+    return (
+      <Appointment
+        key={appointment.id}
+        {...appointment}
+        interview={getInterview(state, appointment.interview)}
+        interviewers={interviewers}
+        bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
+      />
+    );
+  }
+);
+
+//   return (
+//     <Appointment
+//       key={appointment.id}
+//       id={appointment.id}
+//       time={appointment.time}
+//       interview={interview}
+//       interviewers={interviewers}
+//       bookInterview={bookInterview}
+//       cancelInterview={cancelInterview}
+//     />
+//   )
+// });
 
   useEffect(() => {
     // axios.get("http://localhost:8001/api/days").then(response => setDays(response.data));
@@ -70,7 +105,7 @@ const interview = getInterview(state, appointment.interview);
       axios.get("http://localhost:8001/api/interviewers"),
     ]).then((all) => {
       setState(prev => ({ days: all[0].data, appointments: all[1].data, interviewers: all[2].data }));
-    });
+    }).catch(err => {return err});
   }, []);
 
   return (
@@ -89,6 +124,8 @@ const interview = getInterview(state, appointment.interview);
           days={state.days}
           day={state.day}
           setDay = {setDay}
+          useState={useState}
+          getSpots={getSpots}
         />
         </nav>
         <img
