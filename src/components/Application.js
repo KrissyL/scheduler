@@ -44,19 +44,7 @@ export default function Application(props) {
     .then(() => {setState({...state, appointments})})
     .catch(err => {return err}); 
   }
-
-// const appointments = getAppointmentsForDay(state, state.day);
-// const interviewers = getInterviewersForDay(state, state.day);
-// const schedule = appointments.map((appointment) => {
-// const interview = getInterview(state, appointment.interview);
-
-// const {
-//   state,
-//   dispatchState,
-//   bookInterview,
-//   cancelInterview,
-//   getSpots
-// } = useApplicationData();
+const interviewers = getInterviewersForDay(state, state.day);
 
 
 function getSpots(day) {
@@ -67,35 +55,21 @@ function getSpots(day) {
   
       return spots.length;
     };
-const interviewers = getInterviewersForDay(state, state.day);
 
 const schedule = getAppointmentsForDay(state, state.day).map(
   appointment => {
-    return (
-      <Appointment
-        key={appointment.id}
-        {...appointment}
-        interview={getInterview(state, appointment.interview)}
-        interviewers={interviewers}
-        bookInterview={bookInterview}
-        cancelInterview={cancelInterview}
-      />
-    );
-  }
-);
-
-//   return (
-//     <Appointment
-//       key={appointment.id}
-//       id={appointment.id}
-//       time={appointment.time}
-//       interview={interview}
-//       interviewers={interviewers}
-//       bookInterview={bookInterview}
-//       cancelInterview={cancelInterview}
-//     />
-//   )
-// });
+  return (
+    <Appointment
+      key={appointment.id}
+      id={appointment.id}
+      time={appointment.time}
+      interview={getInterview(state, appointment.interview)}
+      interviewers={interviewers}
+      bookInterview={bookInterview}
+      cancelInterview={cancelInterview}
+    />
+  )
+});
 
   useEffect(() => {
     // axios.get("http://localhost:8001/api/days").then(response => setDays(response.data));
@@ -123,7 +97,7 @@ const schedule = getAppointmentsForDay(state, state.day).map(
         <DayList
           days={state.days}
           day={state.day}
-          setDay = {setDay}
+          setDay={setDay}
           useState={useState}
           getSpots={getSpots}
         />
