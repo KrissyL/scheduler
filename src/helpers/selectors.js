@@ -33,7 +33,6 @@ export function getInterviewersForDay(state, day) {
     if(state.interviewers[interviewer]) {
       interviewerArray.push(state.interviewers[interviewer]);
     }
-  })
-    
+  })    
   return interviewerArray;
 };
