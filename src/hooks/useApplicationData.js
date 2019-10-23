@@ -4,7 +4,7 @@ import { getAppointmentsForDay } from "helpers/selectors";
 import reduceState from "reducer/application";
 
 export default function useApplicationData() {
-
+  // default state to use
   const initialState = {
     day: "Monday",
     days: [],
@@ -16,11 +16,11 @@ export default function useApplicationData() {
     reduceState,
     initialState
   )
-  
+  // change the state of day to the day selected
   function setDay(day) {
     dispatchState({value: day, type: "setDay"})
   }
-
+  // update available interview spots for the day
   function getSpots(day) {
     let spots = [];
     const appointmentsPerDay = getAppointmentsForDay(state, day);
@@ -65,7 +65,7 @@ export default function useApplicationData() {
       throw err;
     }
   }
-
+  // retrieve all interview data from the api
   useEffect(() => {
     Promise.all([
       axios.get("/api/days"),
