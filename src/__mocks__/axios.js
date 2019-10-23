@@ -80,6 +80,8 @@ export default {
     }
   }),
   put: jest.fn(url => {
+    fixtures.appointments["1"] = { ...fixtures.appointments["1"], interview: { student: "Lydia", interviewer: 1 }}
+    fixtures.days[0].spots = 0
       return Promise.resolve({
         status: 204,
         statusText: "No Content"
